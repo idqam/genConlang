@@ -1,13 +1,24 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, {
+"use client";
+import type React from "react";
+import {
   createContext,
   useState,
   useContext,
-  ReactNode,
+  type ReactNode,
   useCallback,
 } from "react";
-import { SymbolContextType } from "../types/SymbolContextType";
 import { IPA_VOWELS, IPA_CONSONANTS } from "../utils/constants";
+
+interface SymbolContextType {
+  vowels: string[];
+  consonants: string[];
+  activeVowels: string[];
+  activeConsonants: string[];
+  toggleSymbol: (symbol: string) => void;
+  isSymbolActive: (symbol: string) => boolean;
+  updateInputMapToPhoneme: (key: string, value: string) => void;
+  inputMapToPhoneme: Map<string, string>;
+}
 
 interface SymbolProviderProps {
   children: ReactNode;
@@ -26,9 +37,11 @@ export const useSymbolContext = () => {
 export const SymbolProvider: React.FC<SymbolProviderProps> = ({ children }) => {
   const [activeVowels, setActiveVowels] = useState<string[]>([]);
   const [activeConsonants, setActiveConsonants] = useState<string[]>([]);
-  const [inputMapToPhoneme, setInputMapToPhoneme] = useState(new Map());
+  const [inputMapToPhoneme, setInputMapToPhoneme] = useState(
+    new Map<string, string>()
+  );
 
-  const toggleSymbol = (symbol: string) => {
+  const toggleSymbol = useCallback((symbol: string) => {
     if (IPA_VOWELS.includes(symbol)) {
       setActiveVowels((prev) =>
         prev.includes(symbol)
@@ -42,13 +55,16 @@ export const SymbolProvider: React.FC<SymbolProviderProps> = ({ children }) => {
           : [...prev, symbol]
       );
     }
-  };
+  }, []);
 
-  const isSymbolActive = (symbol: string) => {
-    return activeVowels.includes(symbol) || activeConsonants.includes(symbol);
-  };
+  const isSymbolActive = useCallback(
+    (symbol: string) => {
+      return activeVowels.includes(symbol) || activeConsonants.includes(symbol);
+    },
+    [activeVowels, activeConsonants]
+  );
 
-  const updateInputMapToPhoneme = useCallback((key: any, value: any) => {
+  const updateInputMapToPhoneme = useCallback((key: string, value: string) => {
     setInputMapToPhoneme((prevMap) => {
       const newMap = new Map(prevMap);
       newMap.set(key, value);
@@ -56,7 +72,7 @@ export const SymbolProvider: React.FC<SymbolProviderProps> = ({ children }) => {
     });
   }, []);
 
-  const value = {
+  const value: SymbolContextType = {
     vowels: IPA_VOWELS,
     consonants: IPA_CONSONANTS,
     activeVowels,
