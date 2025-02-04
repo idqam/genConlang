@@ -5,7 +5,7 @@ import IpaButtonGrid from "./IpaButtonGrid";
 export const IpaContainer = () => {
   return (
     <SymbolProvider>
-      <div className="flex flex-col items-center p-4 min-h-screen w-full bg-gray-100">
+      <div className="flex flex-col items-center p-4 min-h-screen w-full bg-zinc-800">
         <h1 className="text-3xl font-bold text-gray-800 mb-8 p-4 bg-blue-400 rounded-lg shadow-md">
           IPA Selector
         </h1>
