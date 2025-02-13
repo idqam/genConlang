@@ -13,17 +13,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMapping } from "@/app/context/MappingContext";
 import { useIpaSymbols } from "@/app/context/IpaSymbolContext";
 
-// A syllable is just a non-empty string.
 const syllableSchema = z.object({
   syllable: z.string().min(1, "Syllable is required"),
 });
 
-// A cluster (for either consonants or vowels) is a non-empty string.
 const clusterSchema = z.object({
   cluster: z.string().min(1, "Cluster is required"),
 });
 
-// A transformation rule consists of a condition and a transformation.
 const transformationSchema = z.object({
   condition: z.string().min(1, "Condition is required"),
   transformation: z.string().min(1, "Transformation is required"),
@@ -184,12 +181,10 @@ export default function PhonotacticRuleForm() {
     [activeIPAField, getValues, setValue]
   );
 
-  // ── Submissions state via useReducer ─────────────────────────────
   const [submissions, dispatch] = useReducer(submissionReducer, []);
 
   const onSubmit = (data: PhonotacticRule) => {
     console.log("Submitted rule set:", data);
-    // Convert the mapping (a Map) to an object.
     const ipaMappingObj = Object.fromEntries(
       Array.from(inputMapToPhoneme.entries())
     );
