@@ -61,7 +61,7 @@ export const GenTypingText = ({ waitFor = 0, onComplete }: Props) => {
         isBaseTextComplete ? "opacity-100" : "opacity-0"
       } flex flex-row space-x-1 justify-center`}
     >
-      <h1 className="text-white text-2xl">{baseTextTyped}</h1>
+      <h1 className="text-red text-2xl">{baseTextTyped}</h1>
       <h1 className="text-blue-500 text-2xl">
         {isBaseTextComplete ? currentWord : ""}
       </h1>

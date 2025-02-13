@@ -1,14 +1,16 @@
 "use client";
 
 import React from "react";
-import { useSymbolContext } from "@/app/context/SymbolContext";
+import { useMapping } from "@/app/context/MappingContext";
+import { useIpaSymbols } from "@/app/context/IpaSymbolContext";
 
 interface IPAButtonProps {
   symbol: string;
 }
 
 const IPAButton: React.FC<IPAButtonProps> = ({ symbol }) => {
-  const { toggleSymbol, isSymbolActive, mappingLocked } = useSymbolContext();
+  const { toggleSymbol, isSymbolActive } = useIpaSymbols();
+  const { mappingLocked } = useMapping();
 
   return (
     <button

@@ -1,21 +1,16 @@
-
 "use client";
 
 import React, { useState } from "react";
-import { useSymbolContext } from "@/app/context/SymbolContext";
+import { useMapping } from "@/app/context/MappingContext";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useIpaSymbols } from "@/app/context/IpaSymbolContext";
 
 const SymbolMappingForm: React.FC = () => {
-  const {
-    activeVowels,
-    activeConsonants,
-    updateInputMapToPhoneme,
-    mappingLocked,
-    lockMapping,
-    unlockMapping,
-  } = useSymbolContext();
+  const { activeVowels, activeConsonants } = useIpaSymbols();
+  const { updateInputMapToPhoneme, mappingLocked, lockMapping, unlockMapping } =
+    useMapping();
 
   const activeSymbols = [...activeVowels, ...activeConsonants];
 
@@ -47,9 +42,7 @@ const SymbolMappingForm: React.FC = () => {
               key={symbol}
               className="flex items-center space-x-2 p-2  max-h-10"
             >
-              <div className="w-10 text-center font-bold  text-sm">
-                {symbol}
-              </div>
+              <div className="w-10 text-center font-bold text-sm">{symbol}</div>
               <span className="font-bold">→</span>
               <div className="flex-1">
                 <Label htmlFor={`mapping-${symbol}`} className="sr-only">

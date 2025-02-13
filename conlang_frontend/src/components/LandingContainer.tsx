@@ -15,7 +15,7 @@ export const LandingContainer = () => {
   }, []);
 
   return (
-    <div className="h-screen flex justify-center items-center p-0">
+    <div className="h-screen flex justify-center items-center p-0 bg-white">
       <div className="h-auto w-auto p-24">
         <div className="flex flex-col items-center space-y-8">
           <h1

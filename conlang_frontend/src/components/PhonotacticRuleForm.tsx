@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useSymbolContext } from "@/app/context/SymbolContext";
+import { useMapping } from "@/app/context/MappingContext";
+import { useIpaSymbols } from "@/app/context/IpaSymbolContext";
 
 // A syllable is just a non-empty string.
 const syllableSchema = z.object({
@@ -171,7 +172,8 @@ export default function PhonotacticRuleForm() {
     "front" | "back" | "neutral" | null
   >(null);
 
-  const { vowels, inputMapToPhoneme } = useSymbolContext();
+  const { vowels } = useIpaSymbols();
+  const { inputMapToPhoneme } = useMapping();
 
   const insertSymbol = useCallback(
     (symbol: string) => {
@@ -187,7 +189,7 @@ export default function PhonotacticRuleForm() {
 
   const onSubmit = (data: PhonotacticRule) => {
     console.log("Submitted rule set:", data);
-    // Convert the context’s mapping (a Map) to an object.
+    // Convert the mapping (a Map) to an object.
     const ipaMappingObj = Object.fromEntries(
       Array.from(inputMapToPhoneme.entries())
     );
@@ -202,6 +204,7 @@ export default function PhonotacticRuleForm() {
   return (
     <div className="p-8 border rounded-lg space-y-8 bg-zinc-800">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Permissible Syllables */}
         <div>
           <Label className="font-semibold" htmlFor="syllableInput">
             Permissible Syllables
@@ -236,6 +239,7 @@ export default function PhonotacticRuleForm() {
           </div>
         </div>
 
+        {/* Transformation Rules */}
         <div className="border p-4 rounded">
           <p className="font-semibold mb-2">Transformation Rules</p>
           <div className="flex flex-col gap-2">
@@ -286,6 +290,7 @@ export default function PhonotacticRuleForm() {
           </div>
         </div>
 
+        {/* Allowed Consonant Clusters */}
         <div>
           <p className="font-semibold">Allowed Consonant Clusters</p>
           <div className="flex gap-2">
@@ -318,6 +323,7 @@ export default function PhonotacticRuleForm() {
           </div>
         </div>
 
+        {/* Allowed Vowel Clusters */}
         <div>
           <p className="font-semibold">Allowed Vowel Clusters</p>
           <div className="flex gap-2">
@@ -350,6 +356,7 @@ export default function PhonotacticRuleForm() {
           </div>
         </div>
 
+        {/* Vowel Harmony */}
         <div>
           <div className="flex items-center gap-3">
             <Label htmlFor="vowelHarmony.enabled">Enable Vowel Harmony?</Label>
@@ -433,6 +440,7 @@ export default function PhonotacticRuleForm() {
           )}
         </div>
 
+        {/* Complex Syllable Rules */}
         <div>
           <Label htmlFor="complexSyllableRules">Complex Syllable Rules</Label>
           <Textarea
