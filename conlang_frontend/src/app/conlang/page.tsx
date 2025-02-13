@@ -10,6 +10,7 @@ import PhonotacticRuleForm from "@/components/PhonotacticRuleForm";
 import SymbolMappingForm from "@/components/SymbolMappingForm";
 import NavBar, { NavItem } from "@/components/NavBar";
 import { useState } from "react";
+import ButtonGridAnimated from "@/components/animated/ButtonGridAnimated";
 
 export default function Conlang() {
   const [navItems, setNavItems] = useState<NavItem[]>([
@@ -57,11 +58,13 @@ export default function Conlang() {
                 <header className="text-xl text-black font-semibold mb-0">
                   Phoneme Selection
                 </header>
-                <IpaButtonGrid symbols={IPA_VOWELS} header="Vowels" />
+                <ButtonGridAnimated symbols={IPA_VOWELS} header="Vowels" />
 
                 <Separator />
-
-                <IpaButtonGrid symbols={IPA_CONSONANTS} header="Consonants" />
+                <ButtonGridAnimated
+                  symbols={IPA_CONSONANTS}
+                  header="Consonants"
+                />
               </div>
 
               <div className="flex flex-col items-center">
