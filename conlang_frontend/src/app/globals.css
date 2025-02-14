@@ -2,8 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --foreground: black;
+  --background: white;
+}
+
 body {
   font-family: "Space Grotesk ", Verdana, sans-serif;
+  color: white !important;
 }
 
 @layer base {
