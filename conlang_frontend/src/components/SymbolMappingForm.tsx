@@ -15,15 +15,25 @@ const SymbolMappingForm: React.FC = () => {
   const activeSymbols = [...activeVowels, ...activeConsonants];
 
   const [localMapping, setLocalMapping] = useState<Record<string, string>>({});
+  const [error, setError] = useState<string | null>(null);
 
   const handleInputChange = (symbol: string, value: string) => {
     setLocalMapping((prev) => ({ ...prev, [symbol]: value }));
   };
 
   const handleSubmitMapping = () => {
+    const missingMappings = activeSymbols.filter(
+      (symbol) => !localMapping[symbol] || localMapping[symbol].trim() === ""
+    );
+
+    if (missingMappings.length > 0) {
+      setError("All symbols must have a corresponding input.");
+      return;
+    }
+
+    setError(null);
     activeSymbols.forEach((symbol) => {
-      const mappingValue = localMapping[symbol] || "";
-      updateInputMapToPhoneme(symbol, mappingValue);
+      updateInputMapToPhoneme(symbol, localMapping[symbol]);
     });
     lockMapping();
   };
@@ -33,16 +43,18 @@ const SymbolMappingForm: React.FC = () => {
   }
 
   return (
-    <div className="p-4 border rounded-lg mt-4 bg-zinc-800">
+    <div className="p-4 border rounded-lg mt-10 bg-zinc-800 ">
       <div className="grid grid-cols-2 gap-4 overflow-y-auto max-h-96 border rounded p-2">
         {activeSymbols.map((symbol) => {
           const currentValue = localMapping[symbol] ?? "";
           return (
             <div
               key={symbol}
-              className="flex items-center space-x-2 p-2  max-h-10"
+              className="flex items-center space-x-2 p-2 max-h-10"
             >
-              <div className="w-10 text-center font-bold text-sm">{symbol}</div>
+              <div className="w-10 text-center font-bold text-sm md:text-lg">
+                {symbol}
+              </div>
               <span className="font-bold">→</span>
               <div className="flex-1">
                 <Label htmlFor={`mapping-${symbol}`} className="sr-only">
@@ -60,6 +72,8 @@ const SymbolMappingForm: React.FC = () => {
           );
         })}
       </div>
+
+      {error && <p className="text-red-500 mt-2">{error}</p>}
 
       <div className="mt-4">
         {mappingLocked ? (

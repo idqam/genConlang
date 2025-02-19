@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { useMapping } from "@/app/context/MappingContext";
 import { useIpaSymbols } from "@/app/context/IpaSymbolContext";

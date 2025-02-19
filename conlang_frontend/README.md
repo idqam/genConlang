@@ -1,36 +1,144 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend UI Overview
 
-## Getting Started
+This project is a language-generation interface that lets users design a constructed language (conlang) by configuring its grammar, phonology, and symbol-to-phoneme mappings. The UI is divided into several functional areas, each encapsulated in its own React component and connected through a series of context providers.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Table of Contents
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- [Project Structure](#project-structure)
+- [Component Breakdown](#component-breakdown)
+  - [Grammar Configuration](#grammar-configuration)
+  - [Phonological Rules Input](#phonological-rules-input)
+  - [IPA Symbol Selection and Mapping](#ipa-symbol-selection-and-mapping)
+  - [Final Submission](#final-submission)
+- [State Management and Contexts](#state-management-and-contexts)
+- [Usage Flow](#usage-flow)
+- [Development Notes](#development-notes)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+The project organizes code into components and context providers. Key files include:
 
-To learn more about Next.js, take a look at the following resources:
+- **Components:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+  - `SubmitSpecs.tsx` – Collects all user input and bundles data for submission.
+  - `GrammarConfigurator.tsx` – Provides an interface for configuring the grammar of the conlang.
+  - `IpaButtonGrid.tsx` – Renders a grid of IPA (International Phonetic Alphabet) buttons that allow the user to select symbols.
+  - `PhonoRulesForm.tsx` – Allows users to input phonological rules, such as syllable structure and transformation rules.
+  - `SymbolMappingForm.tsx` – Provides a form for mapping active IPA symbols to phonemes.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Contexts:**
+  - `GrammarContext.tsx` – Manages the grammar form state including morphology, word order, noun declensions, etc.
+  - `SymbolContext.tsx` – Handles selection (toggling) of IPA symbols as vowels or consonants as well as mapping states.
+  - `IpaSymbolContext.tsx` – Separately manages IPA symbol activation, similar to SymbolContext, but tailored for IPA specifics.
+  - `MappingContext.tsx` – Manages the mapping between IPA symbols and phonemes, including locking the mapping once submitted.
+  - `PhoneRulesContext.tsx` – Manages the phonological rules state including transformation rules, allowed clusters, and vowel harmony settings.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Component Breakdown
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Grammar Configuration
+
+- **GrammarConfigurator.tsx**  
+  This component offers two modes for grammar input: a traditional form with multiple rows and a table-based interface.
+  - **Inputs:**
+    - _Morphology, Word Order, Noun Declensions, Verb Conjugation, Tense/Aspect/Mood_
+    - Additional features such as grammatical gender, evidentiality, politeness, negation, and pronoun system are also configurable.
+    - Language influences are captured to specify external influences on the conlang.
+  - **State Management:**  
+     Uses the `GrammarContext` to store and update the submitted grammar data.
+
+### Phonological Rules Input
+
+- **PhonoRulesForm.tsx**  
+  This component collects phonological specifications including:
+  - Permissible syllables (with examples on how to input optional syllables)
+  - Allowed consonant and vowel clusters (using comma-separated inputs)
+  - Transformation rules using a defined syntax (with guidelines and examples provided in a scrollable help box)
+  - A toggle (via the `IpaSwitchComponent`) that may control further IPA-related settings.
+
+### IPA Symbol Selection and Mapping
+
+- **IpaButtonGrid.tsx**  
+  Renders a grid of buttons for IPA symbols. The buttons are generated dynamically based on a provided list of symbols. This grid is typically used for selecting active symbols which then affect other parts of the UI.
+
+- **SymbolMappingForm.tsx**  
+  This form allows users to map each active IPA symbol to a phoneme.
+  - **Functionality:**
+    - It displays the active symbols (combined from vowels and consonants) from the IPA context.
+    - Each symbol has an associated input field for the user to specify the mapping.
+    - The form checks that every active symbol has a valid mapping before allowing submission.
+    - Once submitted, the mapping is locked to prevent accidental changes; however, the user can unlock it to make edits.
+  - **State Management:**  
+     Uses both the `IpaSymbolContext` (for active symbols) and the `MappingContext` (for mapping and locking functionality).
+
+### Final Submission
+
+- **SubmitSpecs.tsx**  
+  This component acts as the final step in the UI where all the collected configurations are bundled together into a payload:
+  - **Data Collected:**
+    - **Symbols:** Active vowels and consonants along with their symbol-to-phoneme mapping.
+    - **IPA Symbols:** Active IPA vowels and consonants.
+    - **Mapping:** Detailed mapping state from `MappingContext`.
+    - **Phonology Rules:** Transformation rules, consonant/vowel clusters, and vowel harmony settings.
+    - **Grammar:** Grammar data as submitted from the `GrammarConfigurator`.
+  - **Submission Process:**  
+     Currently, the submission code logs the payload to the console. There is also commented-out code intended to send this data to an API endpoint.
+
+---
+
+## State Management and Contexts
+
+The application uses React Contexts extensively to manage state across different parts of the UI:
+
+- **GrammarContext:**  
+  Stores the conlang’s grammar settings. The state is updated via `updateSubmittedData` and made available to any component wrapped by the `GrammarProvider`.
+
+- **SymbolContext & IpaSymbolContext:**  
+  Both contexts handle the activation (selection) of IPA symbols, distinguishing between vowels and consonants. They provide functions like `toggleSymbol` and state properties for active symbols.
+
+- **MappingContext:**  
+  Manages the mapping between selected IPA symbols and their phonemic representations. It includes actions to update mappings and to lock/unlock the mapping state to prevent unwanted changes.
+
+- **PhoneRulesContext:**  
+  Provides state management for phonological rules such as transformation rules and cluster configurations. It allows the UI to capture detailed phonological aspects of the conlang.
+
+Each context is designed to be used by its corresponding components, ensuring that state is shared and updated seamlessly across the UI.
+
+---
+
+## Usage Flow
+
+1. **IPA Symbol Selection:**  
+   Users start by selecting IPA symbols using the button grid provided by `IpaButtonGrid.tsx`. This action toggles the symbols in both the IPA and general symbol contexts.
+
+2. **Mapping Symbols:**  
+   Once symbols are selected, the `SymbolMappingForm.tsx` becomes active, allowing the user to map each symbol to a specific phoneme. The mapping is validated to ensure every active symbol is addressed.
+
+3. **Configuring Grammar:**  
+   The user then moves on to configure the grammatical structure of the language using `GrammarConfigurator.tsx`. They can choose between a detailed row-based input or a more compact table input.
+
+4. **Setting Phonological Rules:**  
+   Next, the `PhonoRulesForm.tsx` collects detailed phonological rules and transformation rules, with built-in help explaining the rule syntax.
+
+5. **Final Submission:**  
+   Finally, the `SubmitSpecs.tsx` component aggregates all data from the various contexts into a single payload. The data is logged (and optionally sent to a backend service) to generate the final language specification.
+
+---
+
+## Development Notes
+
+- **Extensibility:**  
+  The use of contexts and modular components makes it straightforward to extend or modify the UI. New input types or rules can be added by creating additional components and updating the corresponding context.
+
+- **Submission Logic:**  
+  The submission functionality in `SubmitSpecs.tsx` currently logs the payload. To connect with a backend, uncomment and update the fetch request code.
+
+- **Validation:**  
+  Input validation is integrated into forms like the symbol mapping to ensure that all required fields are populated before submission.
+
+---
