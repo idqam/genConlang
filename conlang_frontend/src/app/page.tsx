@@ -3,7 +3,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import PhonotacticRuleForm from "@/components/PhonotacticRuleForm";
 import SymbolMappingForm from "@/components/SymbolMappingForm";
 import NavBar, { NavItem } from "@/components/NavBar";
 import { useState } from "react";

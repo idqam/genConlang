@@ -46,27 +46,24 @@ const SubmitSpecs: React.FC = () => {
       grammar: submittedData,
     };
 
-    console.log(payload);
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    //     try {
-    //       const response = await fetch("http://localhost:8000/api/submit-data", {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify(payload),
-    //       });
+      if (!response.ok) {
+        throw new Error(`Server Error: ${response.status}`);
+      }
 
-    //       if (!response.ok) {
-    //         throw new Error(`Server Error: ${response.status}`);
-    //       }
-
-    //       const data = await response.json();
-    //       console.log("Success:", data);
-    //       alert("Data submitted successfully!");
-    //     } catch (error) {
-    //       console.error("Error submitting data:", error);
-    //       alert("Submission failed. Check console for details.");
-    //     }
-    //   };
+      const data = await response.json();
+      console.log("Success:", data);
+      alert("Data submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting data:", error);
+      alert("Submission failed. Check console for details.");
+    }
   };
 
   return (
