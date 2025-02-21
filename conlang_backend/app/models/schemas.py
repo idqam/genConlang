@@ -1,56 +1,49 @@
 from pydantic import BaseModel
-from typing import List, Dict
+from typing import Dict, List, Optional
 
-# Symbol-related data
-class Symbols(BaseModel):
-    activeVowels: List[str]
-    activeConsonants: List[str]
-    inputMapToPhoneme: Dict[str, str]
+class PhonoTest(BaseModel):
+    activeVowels: Optional[List[str]]
+    activeConsonants: Optional[List[str] ]
 
-class IPASymbols(BaseModel):
-    ipaVowels: List[str]
-    ipaConsonants: List[str]
 
-class Mapping(BaseModel):
-    inputMapToPhoneme: Dict[str, str]
-    mappingLocked: bool
+# Additional Features Model
+class AdditionalFeatureSpec(BaseModel):
+    grammaticalGender: Optional[str] = ""
+    evidentiality: Optional[str] = ""
+    politeness: Optional[str] = ""
+    negation: Optional[str] = ""
+    pronounSystem: Optional[str] = ""
 
-# Phonological rules
-class VowelHarmony(BaseModel):
+# Grammar Specification Model
+class GrammarSpec(BaseModel):
+    morphology:Optional[str] = ""
+    wordOrder: Optional[str] = ""
+    nounCases: Optional[str] = ""
+    verbConjugation:Optional[str] = ""
+    tenseAspectMood: Optional[str] = ""
+    additionalFeatures: AdditionalFeatureSpec
+
+
+class VowelHarmonySpec(BaseModel):
     isEnabled: bool
-    inputs: Dict[str, List[str]]  # Expected keys: 'front', 'back', 'neutral'
+    inputs: Optional[Dict[str, List[str]]]
 
-class PhonologyRules(BaseModel):
-    transformationRules: str
-    consonantClusters: str
-    vowelClusters: str
-    vowelHarmony: VowelHarmony
 
-# Grammar specifications
-class AdditionalFeatures(BaseModel):
-    grammaticalGender: str
-    evidentiality: str
-    politeness: str
-    negation: str
-    pronounSystem: str
+# Phonology Specification Model
+class PhonologySpec(BaseModel):
+    activeVowels: Optional[List[str]]
+    activeConsonants: Optional[List[str]]
+    mapping: Optional[Dict[str, str]] 
+    allowedSyllables: Optional[List[str]] = ""
+    transformationRules: Optional[str] = ""
+    consonantClusters: Optional[str] = ""
+    vowelClusters: Optional[str] = ""
+    vowelHarmony: Optional[VowelHarmonySpec] = None  
 
-class LanguageInfluences(BaseModel):
-    influencedBy: str
-    akinTo: str
 
-class Grammar(BaseModel):
-    morphology: str
-    wordOrder: str
-    nounCases: str
-    verbConjugation: str
-    tenseAspectMood: str
-    additionalFeatures: AdditionalFeatures
-    languageInfluences: LanguageInfluences
 
-# Full payload schema
-class LanguageSpec(BaseModel):
-    symbols: Symbols
-    ipaSymbols: IPASymbols
-    mapping: Mapping
-    phonologyRules: PhonologyRules
-    grammar: Grammar
+# Main Payload Model
+class PayloadSpec(BaseModel):
+    language: Optional[str]
+    phonology: PhonologySpec
+    grammar: GrammarSpec

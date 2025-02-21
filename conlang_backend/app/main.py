@@ -1,7 +1,10 @@
 from fastapi import FastAPI
-from app.api.v1.router import api_router
-from app.core.config import settings
+from .api.v1.router import api_router
+from .core.config import settings
 from fastapi.middleware.cors import CORSMiddleware
+import os
+from dotenv import load_dotenv
+
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION)
 
