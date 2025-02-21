@@ -24,7 +24,7 @@ The project organizes code into components and context providers. Key files incl
 
 - **Components:**
 
-  - `SubmitSpecs.tsx` – Collects all user input and bundles data for submission.
+  - `SendSpecs.tsx` – Collects all user input and bundles data for submission.
   - `GrammarConfigurator.tsx` – Provides an interface for configuring the grammar of the conlang.
   - `IpaButtonGrid.tsx` – Renders a grid of IPA (International Phonetic Alphabet) buttons that allow the user to select symbols.
   - `PhonoRulesForm.tsx` – Allows users to input phonological rules, such as syllable structure and transformation rules.
@@ -78,7 +78,7 @@ The project organizes code into components and context providers. Key files incl
 
 ### Final Submission
 
-- **SubmitSpecs.tsx**  
+- **SendSpecs.tsx**  
   This component acts as the final step in the UI where all the collected configurations are bundled together into a payload:
   - **Data Collected:**
     - **Symbols:** Active vowels and consonants along with their symbol-to-phoneme mapping.
@@ -87,7 +87,7 @@ The project organizes code into components and context providers. Key files incl
     - **Phonology Rules:** Transformation rules, consonant/vowel clusters, and vowel harmony settings.
     - **Grammar:** Grammar data as submitted from the `GrammarConfigurator`.
   - **Submission Process:**  
-     Currently, the submission code logs the payload to the console. There is also commented-out code intended to send this data to an API endpoint.
+     The submission logic logs the payload and optionally sends this data to an API endpoint.
 
 ---
 
@@ -113,32 +113,40 @@ Each context is designed to be used by its corresponding components, ensuring th
 
 ## Usage Flow
 
-1. **IPA Symbol Selection:**  
-   Users start by selecting IPA symbols using the button grid provided by `IpaButtonGrid.tsx`. This action toggles the symbols in both the IPA and general symbol contexts.
+1. **IPA Symbol Selection**  
+   Users start by selecting IPA symbols using `IpaButtonGrid.tsx`. This action toggles the symbols in both the IPA and general symbol contexts.
 
-2. **Mapping Symbols:**  
-   Once symbols are selected, the `SymbolMappingForm.tsx` becomes active, allowing the user to map each symbol to a specific phoneme. The mapping is validated to ensure every active symbol is addressed.
+2. **Mapping Symbols**  
+   Once symbols are selected, `SymbolMappingForm.tsx` becomes active, allowing the user to map each symbol to a phoneme. The mapping is validated before submission.
 
-3. **Configuring Grammar:**  
-   The user then moves on to configure the grammatical structure of the language using `GrammarConfigurator.tsx`. They can choose between a detailed row-based input or a more compact table input.
+3. **Configuring Grammar**  
+   The user configures the grammatical structure of the language using `GrammarConfigurator.tsx`.
 
-4. **Setting Phonological Rules:**  
-   Next, the `PhonoRulesForm.tsx` collects detailed phonological rules and transformation rules, with built-in help explaining the rule syntax.
+4. **Setting Phonological Rules**  
+   Next, `PhonoRulesForm.tsx` collects detailed phonological rules and transformation rules.
 
-5. **Final Submission:**  
-   Finally, the `SubmitSpecs.tsx` component aggregates all data from the various contexts into a single payload. The data is logged (and optionally sent to a backend service) to generate the final language specification.
+5. **Final Submission**  
+   `SendSpecs.tsx` aggregates all data into a payload that can be logged or sent to a backend.
+
+---
 
 ---
 
 ## Development Notes
 
-- **Extensibility:**  
+- ** Extensibility: **
   The use of contexts and modular components makes it straightforward to extend or modify the UI. New input types or rules can be added by creating additional components and updating the corresponding context.
 
-- **Submission Logic:**  
-  The submission functionality in `SubmitSpecs.tsx` currently logs the payload. To connect with a backend, uncomment and update the fetch request code.
+- ** Submission Logic: **
+  The submission functionality in SendSpecs.tsx currently logs the payload. To connect with a backend, uncomment and update the fetch request code.
 
-- **Validation:**  
+- ** Validation: **
   Input validation is integrated into forms like the symbol mapping to ensure that all required fields are populated before submission.
+
+- ** Styling and UI: **
+  The UI is styled using Tailwind CSS for a clean and modern look. Future improvements could involve adding animations or more interactive elements.
+
+- ** Testing: **
+  Unit and integration tests should be implemented for critical components to ensure reliability, especially for input validation and state management logic.
 
 ---

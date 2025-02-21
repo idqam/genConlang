@@ -1,25 +1,19 @@
 "use client";
 
-import React, {
-  createContext,
-  useContext,
-  useReducer,
-  ReactNode,
-  useMemo,
-} from "react";
+import React, { createContext, useContext, useReducer, ReactNode } from "react";
 
 interface MappingState {
-  inputMapToPhoneme: Map<string, string>;
+  inputMapToPhoneme: Record<string, string>;
   mappingLocked: boolean;
 }
 
 type MappingAction =
-  | { type: "UPDATE_MAPPING"; key: string; value: string }
+  | { type: "UPDATE_MAPPING"; mappings: Record<string, string> }
   | { type: "LOCK_MAPPING" }
   | { type: "UNLOCK_MAPPING" };
 
 const initialMappingState: MappingState = {
-  inputMapToPhoneme: new Map<string, string>(),
+  inputMapToPhoneme: {},
   mappingLocked: false,
 };
 
@@ -28,11 +22,11 @@ function mappingReducer(
   action: MappingAction
 ): MappingState {
   switch (action.type) {
-    case "UPDATE_MAPPING": {
-      const newMap = new Map(state.inputMapToPhoneme);
-      newMap.set(action.key, action.value);
-      return { ...state, inputMapToPhoneme: newMap };
-    }
+    case "UPDATE_MAPPING":
+      return {
+        ...state,
+        inputMapToPhoneme: { ...state.inputMapToPhoneme, ...action.mappings },
+      };
     case "LOCK_MAPPING":
       return { ...state, mappingLocked: true };
     case "UNLOCK_MAPPING":
@@ -43,9 +37,9 @@ function mappingReducer(
 }
 
 interface MappingContextValue {
-  inputMapToPhoneme: Map<string, string>;
+  inputMapToPhoneme: Record<string, string>;
   mappingLocked: boolean;
-  updateInputMapToPhoneme: (key: string, value: string) => void;
+  updateInputMapToPhoneme: (mappings: Record<string, string>) => void;
   lockMapping: () => void;
   unlockMapping: () => void;
 }
@@ -71,25 +65,24 @@ export const MappingProvider: React.FC<MappingProviderProps> = ({
 }) => {
   const [state, dispatch] = useReducer(mappingReducer, initialMappingState);
 
-  const updateInputMapToPhoneme = (key: string, value: string) => {
-    dispatch({ type: "UPDATE_MAPPING", key, value });
+  const updateInputMapToPhoneme = (mappings: Record<string, string>) => {
+    dispatch({ type: "UPDATE_MAPPING", mappings });
   };
 
   const lockMapping = () => dispatch({ type: "LOCK_MAPPING" });
   const unlockMapping = () => dispatch({ type: "UNLOCK_MAPPING" });
 
-  const value = useMemo(
-    () => ({
-      inputMapToPhoneme: state.inputMapToPhoneme,
-      mappingLocked: state.mappingLocked,
-      updateInputMapToPhoneme,
-      lockMapping,
-      unlockMapping,
-    }),
-    [state.inputMapToPhoneme, state.mappingLocked]
-  );
-
   return (
-    <MappingContext.Provider value={value}>{children}</MappingContext.Provider>
+    <MappingContext.Provider
+      value={{
+        inputMapToPhoneme: state.inputMapToPhoneme,
+        mappingLocked: state.mappingLocked,
+        updateInputMapToPhoneme,
+        lockMapping,
+        unlockMapping,
+      }}
+    >
+      {children}
+    </MappingContext.Provider>
   );
 };

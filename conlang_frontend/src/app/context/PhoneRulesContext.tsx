@@ -1,25 +1,21 @@
 "use client";
 
 import React, { createContext, useContext, useState } from "react";
-
-interface VowelHarmony {
-  isEnabled: boolean;
-  inputs: {
-    front: string[];
-    back: string[];
-    neutral: string[];
-  };
-}
+import { VowelHarmony } from "../types/SpecPayload";
 
 interface PhonoRulesContextProps {
   transformationRules: string;
   consonantClusters: string;
   vowelClusters: string;
   vowelHarmony: VowelHarmony;
+  allowedSyllables: string[];
+  allowedConsonants: string[];
   setTransformationRules: (rules: string) => void;
   setConsonantClusters: (clusters: string) => void;
   setVowelClusters: (clusters: string) => void;
   setVowelHarmony: (vh: VowelHarmony) => void;
+  setAllowedSyllables: (syllables: string[]) => void;
+  setAllowedConsonants: (consonants: string[]) => void;
 }
 
 const PhonoRulesContext = createContext<PhonoRulesContextProps | undefined>(
@@ -36,6 +32,8 @@ export const PhonoRulesProvider: React.FC<{ children: React.ReactNode }> = ({
     isEnabled: false,
     inputs: { front: [], back: [], neutral: [] },
   });
+  const [allowedSyllables, setAllowedSyllables] = useState<string[]>([]);
+  const [allowedConsonants, setAllowedConsonants] = useState<string[]>([]);
 
   return (
     <PhonoRulesContext.Provider
@@ -44,10 +42,14 @@ export const PhonoRulesProvider: React.FC<{ children: React.ReactNode }> = ({
         consonantClusters,
         vowelClusters,
         vowelHarmony,
+        allowedSyllables,
+        allowedConsonants,
         setTransformationRules,
         setConsonantClusters,
         setVowelClusters,
         setVowelHarmony,
+        setAllowedSyllables,
+        setAllowedConsonants,
       }}
     >
       {children}

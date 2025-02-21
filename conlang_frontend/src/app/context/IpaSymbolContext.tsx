@@ -6,6 +6,7 @@ import React, {
   useReducer,
   ReactNode,
   useMemo,
+  useCallback,
 } from "react";
 import { IPA_VOWELS, IPA_CONSONANTS } from "../utils/constants";
 
@@ -87,9 +88,12 @@ export const IpaSymbolsProvider: React.FC<IpaSymbolsProviderProps> = ({
     dispatch({ type: "TOGGLE_SYMBOL", symbol });
   };
 
-  const isSymbolActive = (symbol: string) =>
-    state.activeVowels.includes(symbol) ||
-    state.activeConsonants.includes(symbol);
+  const isSymbolActive = useCallback(
+    (symbol: string) =>
+      state.activeVowels.includes(symbol) ||
+      state.activeConsonants.includes(symbol),
+    [state.activeVowels, state.activeConsonants]
+  );
 
   const value = useMemo(
     () => ({
@@ -100,7 +104,7 @@ export const IpaSymbolsProvider: React.FC<IpaSymbolsProviderProps> = ({
       toggleSymbol,
       isSymbolActive,
     }),
-    [state.activeVowels, state.activeConsonants]
+    [state.activeVowels, state.activeConsonants, isSymbolActive]
   );
 
   return (

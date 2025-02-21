@@ -9,21 +9,30 @@ import { useIpaSymbols } from "@/app/context/IpaSymbolContext";
 
 const SymbolMappingForm: React.FC = () => {
   const { activeVowels, activeConsonants } = useIpaSymbols();
-  const { updateInputMapToPhoneme, mappingLocked, lockMapping, unlockMapping } =
-    useMapping();
+  const {
+    updateInputMapToPhoneme,
+    mappingLocked,
+    lockMapping,
+    unlockMapping,
+    inputMapToPhoneme,
+  } = useMapping();
 
   const activeSymbols = [...activeVowels, ...activeConsonants];
 
-  const [localMapping, setLocalMapping] = useState<Record<string, string>>({});
+  const [localMapping, setLocalMapping] =
+    useState<Record<string, string>>(inputMapToPhoneme);
   const [error, setError] = useState<string | null>(null);
 
   const handleInputChange = (symbol: string, value: string) => {
-    setLocalMapping((prev) => ({ ...prev, [symbol]: value }));
+    setLocalMapping((prev) => ({
+      ...prev,
+      [symbol]: value,
+    }));
   };
 
   const handleSubmitMapping = () => {
     const missingMappings = activeSymbols.filter(
-      (symbol) => !localMapping[symbol] || localMapping[symbol].trim() === ""
+      (symbol) => !localMapping[symbol]?.trim()
     );
 
     if (missingMappings.length > 0) {
@@ -32,9 +41,10 @@ const SymbolMappingForm: React.FC = () => {
     }
 
     setError(null);
-    activeSymbols.forEach((symbol) => {
-      updateInputMapToPhoneme(symbol, localMapping[symbol]);
-    });
+
+    updateInputMapToPhoneme(localMapping);
+
+    console.log("Updated Mapping:", localMapping);
     lockMapping();
   };
 
@@ -43,34 +53,31 @@ const SymbolMappingForm: React.FC = () => {
   }
 
   return (
-    <div className="p-4 border rounded-lg mt-10 bg-zinc-800 ">
+    <div className="p-4 border rounded-lg mt-10 bg-zinc-800">
       <div className="grid grid-cols-2 gap-4 overflow-y-auto max-h-96 border rounded p-2">
-        {activeSymbols.map((symbol) => {
-          const currentValue = localMapping[symbol] ?? "";
-          return (
-            <div
-              key={symbol}
-              className="flex items-center space-x-2 p-2 max-h-10"
-            >
-              <div className="w-10 text-center font-bold text-sm md:text-lg">
-                {symbol}
-              </div>
-              <span className="font-bold">→</span>
-              <div className="flex-1">
-                <Label htmlFor={`mapping-${symbol}`} className="sr-only">
-                  Mapping for {symbol}
-                </Label>
-                <Input
-                  className="max-w-14"
-                  id={`mapping-${symbol}`}
-                  value={currentValue}
-                  onChange={(e) => handleInputChange(symbol, e.target.value)}
-                  disabled={mappingLocked}
-                />
-              </div>
+        {activeSymbols.map((symbol) => (
+          <div
+            key={symbol}
+            className="flex items-center space-x-2 p-2 max-h-10"
+          >
+            <div className="w-10 text-center font-bold text-sm md:text-lg">
+              {symbol}
             </div>
-          );
-        })}
+            <span className="font-bold">→</span>
+            <div className="flex-1">
+              <Label htmlFor={`mapping-${symbol}`} className="sr-only">
+                Mapping for {symbol}
+              </Label>
+              <Input
+                className="max-w-14"
+                id={`mapping-${symbol}`}
+                value={localMapping[symbol] ?? ""}
+                onChange={(e) => handleInputChange(symbol, e.target.value)}
+                disabled={mappingLocked}
+              />
+            </div>
+          </div>
+        ))}
       </div>
 
       {error && <p className="text-red-500 mt-2">{error}</p>}

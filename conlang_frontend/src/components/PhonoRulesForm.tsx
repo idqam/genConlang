@@ -17,28 +17,33 @@ export const PhonoRulesForm = () => {
     vowelClusters,
     setVowelClusters,
     vowelHarmony,
+    setVowelHarmony,
+    allowedSyllables,
+    setAllowedSyllables,
   } = usePhonoRules();
 
   const handleSubmit = () => {
-    const json = {
-      transformationRules,
-      consonantClusters,
-      vowelClusters,
-      vowelHarmony,
-    };
-    console.log(json);
+    setTransformationRules(transformationRules);
+    setConsonantClusters(consonantClusters);
+    setVowelClusters(vowelClusters);
+    setVowelHarmony(vowelHarmony);
+    setAllowedSyllables(allowedSyllables);
   };
-
   return (
     <div className="p-8 border rounded-lg space-y-8 bg-zinc-800">
       <div className="flex flex-col space-y-6">
         <div>
           <Label className="font-semibold">Permissible Syllables</Label>
           <div className="flex space-x-2 mt-1">
-            <Textarea placeholder="Separate syllables by ',' (parentheses mean optional)" />
-            <Button onClick={() => console.log("Add syllables")}>
-              Add Syllables
-            </Button>
+            <Textarea
+              placeholder="Separate syllables by ','"
+              value={allowedSyllables.join(", ")}
+              onChange={(e) =>
+                setAllowedSyllables(
+                  e.target.value.split(",").map((s) => s.trim())
+                )
+              }
+            />
           </div>
         </div>
 
@@ -50,9 +55,6 @@ export const PhonoRulesForm = () => {
               value={consonantClusters}
               onChange={(e) => setConsonantClusters(e.target.value)}
             />
-            <Button onClick={() => console.log("Add C-Clusters")}>
-              Add Clusters
-            </Button>
           </div>
         </div>
 
@@ -64,9 +66,6 @@ export const PhonoRulesForm = () => {
               value={vowelClusters}
               onChange={(e) => setVowelClusters(e.target.value)}
             />
-            <Button onClick={() => console.log("Add V-Clusters")}>
-              Add Clusters
-            </Button>
           </div>
         </div>
 
@@ -79,7 +78,6 @@ export const PhonoRulesForm = () => {
               value={transformationRules}
               onChange={(e) => setTransformationRules(e.target.value)}
             />
-            <Button onClick={() => console.log("Add Rules")}>Add Rules</Button>
           </div>
 
           <div className="border-2 border-gray-500 p-4 rounded-md text-xs mt-2 max-h-48 overflow-y-scroll bg-gray-900 text-white">
