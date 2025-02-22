@@ -64,8 +64,8 @@ function InnerHome({
 
   return (
     <div className="grid w-screen min-h-screen bg-gradient-to-tl from-amber-200 via-teal-500 to-pink-200 pl-2 space-y-8">
-      <header className="text-center space-y-4">
-        <h1 className="text-4xl font-bold tracking-tight border-2 rounded-xl bg-gradient-to-l from-pink-500 to-purple-800 text-white p-2">
+      <header className="text-center space-y-4 flex items-center justify-center flex-col">
+        <h1 className="text-4xl font-bold tracking-tight w-fit rounded-xl bg-gradient-to-l text-transparent bg-clip-text from-pink-500 to-purple-800 text-white p-2">
           Conlang Generator
         </h1>
         <p className="text-lg max-w-2xl mx-auto text-black">
@@ -73,7 +73,9 @@ function InnerHome({
           phonological rules, grammar systems, and vocabulary generation.
         </p>
       </header>
-      <SendSpecs />
+      <div className="flex items-center justify-center">
+        <SendSpecs />
+      </div>
       <NavBar items={navItems} activeId={activeTab} onChange={setActiveTab} />
 
       {activeTab === "specification" && (

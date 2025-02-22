@@ -69,10 +69,10 @@ export const SendSpecs = () => {
 
   return (
     <button
-      className="border-2 rounded-xl p-2 text-black"
+      className=" font-bold text-sm md:text-lg border-2 rounded-xl p-2 text-white hover:-translate-y-2 hover:shadow-lg  flex justify-center bg-zinc-800 w-fit items-center"
       onClick={() => submitSpecs(payload)}
     >
-      Test Payload
+      Send Specification
     </button>
   );
 };
